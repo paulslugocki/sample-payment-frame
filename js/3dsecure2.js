@@ -125,13 +125,20 @@ var statusUpdates = function(event) {
     .then((data) => {
       console.info("Data");
       console.info(data);
+      data = data.transaction;
+      console.info(data);
       if (data.state === 'succeeded') {
         // finish your checkout and redirect to success page
         alert("Succeeded");
       }
 
+      if (data.state === 'gateway_processing_failed') {
+        // Failed
+        alert("Failed (gateway_processing_failed)");
+      }
+
       if (data.state === 'pending' && data.required_action === 'challenge') {
-        alewrt("Challenge");
+        alert("Challenge");
         event.finalize(data);
         // TODO: Show the modal div that wraps the challengeIframeLocation
         //       ("your-challenge-id-here" below would be the id you specify

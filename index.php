@@ -106,11 +106,11 @@ include('config.php');
     <fieldset class="spf-fs-cc">
       <div class="spf-field">
         Hidden fields:
-      <div id="spreedly-threeds-hidden-iframe"></div>
+      <div id="spreedly-threeds-hidden-iframe" style="border: 1px solid red; height: 100px;"></div>
 
-      <div id="spreedly-threeds-challenge-iframe"></div>
-
+      <div id="spreedly-threeds-challenge-iframe" style="border: 1px solid red;  height: 100px;></div>
       </div>
+      <div style="clear: both;">
     </fieldset>
 
 
