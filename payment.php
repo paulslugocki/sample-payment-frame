@@ -26,8 +26,6 @@ $payment->addChild('three_ds_version', $payment_data["three_ds_version"]);
 
 $payment->addChild('redirect_url', $sly_redirect_url);
 
-$payment->addChild('callback_url', $sly_callback_url);
-
 error_log($payment->asXml());
 
 //exit();
