@@ -1,0 +1,5 @@
+{
+    "require": {
+        "tourcms/tourcms-php": "^3.3"
+    }
+}
