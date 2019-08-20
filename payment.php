@@ -3,23 +3,42 @@ include_once('config.php');
 
 $payment_data = json_decode(file_get_contents('php://input'), true);
 
-$transaction_details = array(
-    'amount' => $payment_data["amount"],
-    'currency_code' => $payment_data["currency_code"],
-    'payment_method_token' => $payment_data["payment_method_token"],
-    'order_id' => $payment_data["order_id"],
-    'browser_info'=> $payment_data["browser_info"],
-    'attempt_3dsecure' => $payment_data["attempt_3dsecure"],
-    'three_ds_version' => $payment_data["three_ds_version"],
-    'redirect_url' => $sly_redirect_url,
-    'callback_url' => $sly_callback_url
-);
+// Create a new SimpleXMLElement to hold the payment details
+$payment = new SimpleXMLElement('<payment />');
 
-// print_r($transaction_details);
-// exit();
+// Set the Spreedly payment method token to use
+$payment->addChild('spreedly_payment_method', $payment_data["payment_method_token"]);
 
-$transaction = $sly->purchase($sly_gateway, $transaction_details);
+// Must set the Booking ID on the XML, so TourCMS knows which to update
+$payment->addChild('booking_id', 677);
+
+// Must set the value of the payment
+$payment->addChild('payment_value', '20');
+
+// Must set the currency
+$payment->addChild('payment_currency', 'GBP');
+
+$payment->addChild('browser_info', $payment_data["browser_info"]);
+
+$payment->addChild('attempt_3dsecure', $payment_data["attempt_3dsecure"]);
+
+$payment->addChild('three_ds_version', $payment_data["three_ds_version"]);
+
+$payment->addChild('redirect_url', $sly_redirect_url);
+
+$payment->addChild('callback_url', $sly_callback_url);
+
+error_log($payment->asXml());
+
+//exit();
+
+// Call TourCMS API, charging the card
+$result = $tourcms->spreedly_create_payment($payment, $channel_id);
+
+error_log("result");
+
+error_log($result->asXml());
 
 header("Content-type: text/xml");
-echo $transaction->asXml();
+echo $result->asXml();
 ?>
