@@ -35,17 +35,14 @@ function sendPayment(opts = {}) {
       method: 'POST',
       body: JSON.stringify(purchaseParams)
     })
-    .then(response => response.text())
-    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(response => response.json())
     .then(data => checkPaymentResponse(data))
   .catch(error => console.error(error));
 }
 
 var checkPaymentResponse = function(data) {
   console.info(data);
-  var stateNode = data.getElementsByTagName("state")[0];
-  console.info(stateNode);
-  var stateNodeText = stateNode.innerHTML;
+  var stateNodeText = data.state;
   console.info(stateNodeText);
 
   if(stateNodeText == "succeeded") {
@@ -59,11 +56,14 @@ var checkPaymentResponse = function(data) {
 
 var setLifeCycle = function(data) {
 
+  console.warn("In lifecycle");
+
   console.info(data);
-  var tokenNode = data.getElementsByTagName("transaction")[0].getElementsByTagName("token")[0];
-  console.info(tokenNode);
-  var tokenNodeText = tokenNode.innerHTML;
+  var tokenNodeText = data.token;
   console.info(tokenNodeText);
+  var transIdNodeText = data.tourcms_transaction_id;
+  console.info(transIdNodeText);
+  window.transactionId = transIdNodeText;
 
   var lifecycle = new Spreedly.ThreeDS.Lifecycle({
     hiddenIframeLocation: 'spreedly-threeds-hidden-iframe',
@@ -82,16 +82,20 @@ var setLifeCycle = function(data) {
 
   // All of the following attributes are required
   var transactionData = {
-    state: data.getElementsByTagName("state")[0].innerHTML,
+    state: data.state,
     // The current state of the transaction. 'pending', 'succeeded', etc
-    required_action: data.getElementsByTagName("required_action")[0].innerHTML,
+    required_action: data.required_action,
     // The next action to be performed in the 3D Secure workflow
-    device_fingerprint_form: data.getElementsByTagName("device_fingerprint_form")[0].firstChild.data,
+    device_fingerprint_form: data.device_fingerprint_form.cdata,
     // Available when the required_action is on the device fingerprint step
-    checkout_form: data.getElementsByTagName("checkout_form")[0].firstChild.data,
+    checkout_form: data.checkout_form.cdata,
     // Available when the required_action is on the 3D Secure 1.0 fallback step
-    checkout_url: data.getElementsByTagName("checkout_url")[0].innerHTML
+    checkout_url: data.checkout_url,
     // Available when the required_action is on the 3D Secure 1.0 fallback step
+    challenge_url: data.challenge_url,
+    // Available when the required_action is challenge
+    challenge_form: data.challenge_form.cdata
+    // Available when the required_action is challenge
   };
 
   console.info("Transaction data:");
@@ -104,9 +108,12 @@ var setLifeCycle = function(data) {
 }
 
 var statusUpdates = function(event) {
+  console.info('statusUpdates');
+  console.info(event);
   if (event.action === 'succeeded') {
     // finish your checkout and redirect to success page
     alert("Succeeded, we would checkout and redirect to success");
+    //fetch(`complete.php?transaction_id=` + window.transactionId, { method: 'POST' });
   } else if(event.action === 'error') {
     // present an error to the user to retry
     alert("Error, user should try again");
@@ -120,7 +127,7 @@ var statusUpdates = function(event) {
     // This is an example of the authenticated call that you'd make
     // to your service.
     console.info("About to call complete");
-    fetch(`complete.php?token=` + event.token, { method: 'POST' })
+    fetch(`complete.php?transaction_id=` + window.transactionId, { method: 'POST' })
     .then(response => response.json())
     .then((data) => {
       console.info("Data");
@@ -131,7 +138,7 @@ var statusUpdates = function(event) {
       }
 
       if (data.state === 'pending' && data.required_action === 'challenge') {
-        alewrt("Challenge");
+        alert("Challenge");
         event.finalize(data);
         // TODO: Show the modal div that wraps the challengeIframeLocation
         //       ("your-challenge-id-here" below would be the id you specify
@@ -142,6 +149,10 @@ var statusUpdates = function(event) {
         // </div>
 
         document.getElementById('spreedly-threeds-challenge-iframe').classList.remove('hidden');
+      }
+
+      if(data.state === 'gateway_processing_failed') {
+        alert("Error gateway_processing_failed");
       }
   })
 }

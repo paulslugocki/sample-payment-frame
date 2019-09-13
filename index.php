@@ -69,12 +69,13 @@ include('config.php');
         <label>Amount</label>
         <div class="spf-field-group">
           <select id="amount-input" class="spf-input-text" style="width: 90%">
-            <option value="3001">3001 - 3D Secure 2 full frictionless flow (immediate transaction flow)</option>
-            <option value="3002">3002 - Fallback from 3DS2 to 3DS1</option>
-            <option value="3003">3003 - 3D Secure device fingerprint flow with direct authorize (requires lifecycle)</option>
-            <option value="3004">3004 - 3D Secure device fingerprint flow to challenge (requires lifecycle and completion call)</option>
-            <option value="3103">3103 - 3D Secure device fingerprint flow with forced failure</option>
-            <option value="3104">3104 - 3D Secure challenge flow with forced failure</option>
+            <option value="30.01">3001 - 3D Secure 2 full frictionless flow (immediate transaction flow)</option>
+            <option value="30.02">3002 - Fallback from 3DS2 to 3DS1</option>
+            <option value="30.03">3003 - 3D Secure device fingerprint flow with direct authorize (requires lifecycle)</option>
+            <option value="30.04">3004 - 3D Secure device fingerprint flow to challenge (requires lifecycle and completion call)</option>
+            <option value="30.05">3005 - 3D Secure direct challenge (requires lifecycle and completion call)</option>
+            <option value="31.03">3103 - 3D Secure device fingerprint flow with forced failure</option>
+            <option value="31.04">3104 - 3D Secure challenge flow with forced failure</option>
           </select>
           <!-- <label class="spf-label-secondary" for="spf-exp-m">Month (MM)</label> -->
         </div>
@@ -103,15 +104,7 @@ include('config.php');
       </div>
     </fieldset>
 
-    <fieldset class="spf-fs-cc">
-      <div class="spf-field">
-        Hidden fields:
-      <div id="spreedly-threeds-hidden-iframe"></div>
 
-      <div id="spreedly-threeds-challenge-iframe"></div>
-
-      </div>
-    </fieldset>
 
 
     <fieldset class="spf-field-submit">
@@ -127,6 +120,16 @@ include('config.php');
       data-cvv-id="spreedly-cvv-test">
     </script>
   </form>
+
+  <fieldset class="spf-fs-cc">
+    <div class="spf-field">
+      Hidden fields:
+    <div id="spreedly-threeds-hidden-iframe"></div>
+
+    <div id="spreedly-threeds-challenge-iframe"></div>
+
+    </div>
+  </fieldset>
 
   <script>
     Spreedly.init();
