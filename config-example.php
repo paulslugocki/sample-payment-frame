@@ -1,7 +1,5 @@
 <?php
 	include_once('vendor/autoload.php');
-	include_once('spreedly.php');
-
 	// TourCMS API
 
 	use TourCMS\Utils\TourCMS as TourCMS;
