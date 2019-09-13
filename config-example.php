@@ -14,6 +14,10 @@
 
 	$tourcms = new TourCMS($marketplace_id, $tourcms_api_key, 'simplexml');
 
+	$sly_booking_id = 0;
+
+	$sly_currency = 'EUR';
+
 	//$tourcms->set_base_url('http://localhost/api.tourcms.com');
 
 	// Set up Spreedly object

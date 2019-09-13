@@ -10,7 +10,7 @@ $payment = new SimpleXMLElement('<payment />');
 $payment->addChild('spreedly_payment_method', $payment_data["payment_method_token"]);
 
 // Must set the Booking ID on the XML, so TourCMS knows which to update
-$payment->addChild('booking_id', 29764);
+$payment->addChild('booking_id', $sly_booking_id);
 
 //$payment->addChild('paid_by', 'C');
 
@@ -18,7 +18,7 @@ $payment->addChild('booking_id', 29764);
 $payment->addChild('payment_value', $payment_data['amount']);
 
 // Must set the currency
-$payment->addChild('payment_currency', 'EUR');
+$payment->addChild('payment_currency', $sly_currency);
 
 $payment->addChild('browser_info', $payment_data["browser_info"]);
 
