@@ -28,6 +28,4 @@
 
 	$sly_redirect_url = 'https://www.example.com';
 
-	$sly_callback_url = 'https://www.example.com';
-
 ?>
