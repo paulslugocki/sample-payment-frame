@@ -16,6 +16,8 @@
 
 	$sly_currency = 'EUR';
 
+	$attempt_3dsecure = true;
+
 	//$tourcms->set_base_url('http://localhost/api.tourcms.com');
 
 	// Set up Spreedly object
@@ -27,7 +29,5 @@
 	$sly_redirect_url = 'https://www.example.com';
 
 	$sly_callback_url = 'https://www.example.com';
-
-	$sly = new Spreedly($sly_environment, $sly_access_secret, $sly_signing_secret);
 
 ?>

@@ -22,7 +22,8 @@ $payment->addChild('payment_currency', $sly_currency);
 
 $payment->addChild('browser_info', $payment_data["browser_info"]);
 
-$payment->addChild('attempt_3dsecure', $payment_data["attempt_3dsecure"]);
+if($attempt_3dsecure)
+  $payment->addChild('attempt_3dsecure', $payment_data["attempt_3dsecure"]);
 
 $payment->addChild('three_ds_version', $payment_data["three_ds_version"]);
 
@@ -39,9 +40,15 @@ error_log("result");
 
 error_log($response->asXml());
 
+if($response->error == "OK")
+  $state = 'succeeded';
+else
+  $state = (string)$response->booking->transaction->state;
+
+
 $transaction = array(
   'tourcms_transaction_id' => (string)$response->booking->transaction->transaction_id,
-  'state' => (string)$response->booking->transaction->state,
+  'state' => $state,
   'succeeded' => (string)$response->booking->transaction->succeeded,
   'message' => (string)$response->booking->transaction->message,
   'token' => (string)$response->booking->transaction->transaction_token,
