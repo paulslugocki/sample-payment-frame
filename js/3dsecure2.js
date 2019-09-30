@@ -65,7 +65,12 @@ var setLifeCycle = function(data) {
   console.info(transIdNodeText);
   window.transactionId = transIdNodeText;
 
+  var SpreedlyCodeNode = document.querySelector('#spreedly-iframe');
+  var SpreedlyEnvKey = SpreedlyCodeNode.dataset.environmentKey;
+
   var lifecycle = new Spreedly.ThreeDS.Lifecycle({
+    environmentKey: SpreedlyEnvKey,
+    // Spreedly environment key
     hiddenIframeLocation: 'spreedly-threeds-hidden-iframe',
     // The DOM node that you'd like to inject hidden iframes (required)
     challengeIframeLocation: 'spreedly-threeds-challenge-iframe',
