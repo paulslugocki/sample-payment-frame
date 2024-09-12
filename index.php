@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<?php
+include('config.php');
+?><!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -6,9 +8,12 @@
   <title>Spreedly Sample iFrame Payment Page</title>
   <link rel="stylesheet" type="text/css" href="css/styles.css">
   <script src="https://core.spreedly.com/iframe/iframe-v1.min.js"></script>
+  <script src="js/3dsecure2.js"></script>
 </head>
 
 <body>
+
+  <input type="hidden" id="aceptheadercapture" value=<?php echo htmlspecialchars($_SERVER["HTTP_ACCEPT"]); ?>>
 
   <form id="payment-form" accept-charset="UTF-8" class="spf-form" method="POST"
     action="#" onsubmit="submitPaymentForm(); return false;">
@@ -60,6 +65,22 @@
     <fieldset class="spf-fs-cc">
       <h2>Payment Details</h2>
 
+      <div class="spf-field spf-field-exp">
+        <label>Amount</label>
+        <div class="spf-field-group">
+          <select id="amount-input" class="spf-input-text" style="width: 90%">
+            <option value="30.01">3001 - 3D Secure 2 full frictionless flow (immediate transaction flow)</option>
+            <option value="30.02">3002 - Fallback from 3DS2 to 3DS1</option>
+            <option value="30.03">3003 - 3D Secure device fingerprint flow with direct authorize (requires lifecycle)</option>
+            <option value="30.04">3004 - 3D Secure device fingerprint flow to challenge (requires lifecycle and completion call)</option>
+            <option value="30.05">3005 - 3D Secure direct challenge (requires lifecycle and completion call)</option>
+            <option value="31.03">3103 - 3D Secure device fingerprint flow with forced failure</option>
+            <option value="31.04">3104 - 3D Secure challenge flow with forced failure</option>
+          </select>
+          <!-- <label class="spf-label-secondary" for="spf-exp-m">Month (MM)</label> -->
+        </div>
+      </div>
+
       <div class="spf-field">
         <label class="spf-field-group spf-number">Credit Card Number</label>
         <label class="spf-field-group spf-verification_value">CVV</label>
@@ -83,6 +104,9 @@
       </div>
     </fieldset>
 
+
+
+
     <fieldset class="spf-field-submit">
       <input type="submit" class="button" value="Submit Payment">
       <div id="message"></div>
@@ -91,11 +115,21 @@
 
     <script
       id="spreedly-iframe"
-      data-environment-key="TbWAYgG7qaagGBh7hPjXQxS4DM4"
+      data-environment-key="<?php echo $sly_environment; ?>"
       data-number-id="spreedly-number-test"
       data-cvv-id="spreedly-cvv-test">
     </script>
   </form>
+
+  <fieldset class="spf-fs-cc">
+    <div class="spf-field">
+      Hidden fields:
+    <div id="spreedly-threeds-hidden-iframe"></div>
+
+    <div id="spreedly-threeds-challenge-iframe"></div>
+
+    </div>
+  </fieldset>
 
   <script>
     Spreedly.init();
@@ -111,6 +145,15 @@
       // For demonstration purposes just display the token
       var messageEl = document.getElementById('message');
       messageEl.innerHTML = "Success! The returned payment method token is: " + token;
+
+      var amountBox = document.getElementById("amount-input");
+
+      sendPayment({
+		      'amount': amountBox.options[amountBox.selectedIndex].value,
+					'currency_code':'USD',
+					'payment_method_token':token,
+          'order_id': ''
+      });
     });
 
     Spreedly.on('errors', function(errors) {

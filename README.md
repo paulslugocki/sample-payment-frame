@@ -1,9 +1,5 @@
 # sample-payment-frame
 
-An example implementation of a payment page using the Spreedly iFrame payment collection form.
+An example implementation of a payment page using the Spreedly iFrame payment collection form and TourCMS API for 3D Secure 2 payments.
 
-You can see this form live at [https://spreedly-payment-frame.herokuapp.com](https://spreedly-payment-frame.herokuapp.com).
-
-All logic is contained in `index.html`. The other files in this repo
-exist to support deploying this app to Heroku. If you've cloned the
-repo locally, you can just open `index.html` in your browser.
+Duplicate `config-example.php` as `config.php` and load your TourCMS API credentials. Set your currency, and a valid TourCMS booking ID.
